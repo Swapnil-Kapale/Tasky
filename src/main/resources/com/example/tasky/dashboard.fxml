@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXProgressBar?>
+<?import io.github.palexdev.materialfx.controls.MFXTableView?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1920.0" stylesheets="@stylesheets/dashboard.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tasky.DashboardController">
+   <ImageView fitHeight="1000.0" fitWidth="1920.0" layoutX="14.0" layoutY="-1.0" opacity="0.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<!--      <Image url="@../../../../../../../javafx/ui/src/main/resources/com/example/ui/bg.png" />-->
+   </ImageView>
+   <AnchorPane prefHeight="1000.0" prefWidth="260.0" styleClass="left_container" stylesheets="@stylesheets/dashboard.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Pane prefHeight="120.0" prefWidth="260.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <FontIcon iconLiteral="ci-network-4" iconSize="40" layoutX="52.0" layoutY="78.0" text="" />
+         <Label layoutX="116.0" layoutY="45.0" text="Tasky">
+            <font>
+               <Font name="Comfortaa Regular" size="24.0" />
+            </font>
+         </Label>
+      </Pane>
+      <VBox alignment="CENTER" layoutY="216.0" prefHeight="171.0" prefWidth="260.0" styleClass="menu_container" AnchorPane.topAnchor="120.0">
+         <MFXButton id="btn" text="Tasks">
+            <graphic>
+               <FontIcon blendMode="SRC_ATOP" iconLiteral="ci-chart-histogram" iconSize="22" />
+            </graphic>
+         </MFXButton>
+         <MFXButton id="btn" text="Create Team">
+            <graphic>
+               <FontIcon iconLiteral="ci-group" iconSize="22" />
+            </graphic>
+         </MFXButton>
+         <MFXButton id="btn" text="Create Task">
+            <graphic>
+               <FontIcon iconLiteral="ci-add" iconSize="22" />
+            </graphic>
+         </MFXButton>
+      </VBox>
+      <Pane layoutX="30.0" layoutY="786.0" prefHeight="96.0" prefWidth="260.0" styleClass="log_out_pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <MFXButton id="btn" fx:id="logoutButton" layoutX="30.0" layoutY="24.0" onAction="#logout" prefWidth="126.0" text="Log out">
+            <graphic>
+               <FontIcon iconLiteral="ci-exit" iconSize="22" />
+            </graphic>
+         </MFXButton>
+      </Pane>
+   </AnchorPane>
+   <AnchorPane layoutX="260.0" prefHeight="1000.0" prefWidth="1659.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="260.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane prefHeight="1000.0" prefWidth="1196.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane prefHeight="180.0" prefWidth="700.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="65.0" AnchorPane.topAnchor="115.0">
+               <Pane layoutX="277.0" layoutY="14.0" prefHeight="136.0" prefWidth="200.0" styleClass="count_card">
+                  <Label id="title" layoutX="27.0" layoutY="29.0" text="Pending Tasks">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <graphic>
+                        <FontIcon iconLiteral="ci-checkmark-outline-warning" iconSize="20" />
+                     </graphic>
+                  </Label>
+                  <Label id="count" fx:id="pendingTaskCounter" layoutX="81.0" layoutY="75.0" text="30" />
+                  <MFXProgressBar id="pendingTaskProgressBar" fx:id="pendingTaskProgressBar" layoutX="21.0" layoutY="66.0" prefHeight="5.0" prefWidth="157.0" progress="0.0" styleClass="bar1" />
+               </Pane>
+               <Pane layoutX="25.0" layoutY="15.0" prefHeight="136.0" prefWidth="200.0" styleClass="count_card" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="15.0">
+                  <Label id="title" layoutX="21.0" layoutY="28.0" text="Complete Tasks">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <graphic>
+                        <FontIcon iconLiteral="ci-checkmark" iconSize="20" />
+                     </graphic>
+                  </Label>
+                  <Label id="count" fx:id="completeTaskCounter" layoutX="82.0" layoutY="76.0" text="70" />
+                  <MFXProgressBar id="completeTaskProgressBar" fx:id="completeTaskProgressBar" layoutX="22.0" layoutY="65.0" prefHeight="5.0" prefWidth="157.0" progress="0.0" styleClass="bar1" />
+               </Pane>
+               <Pane layoutX="530.0" layoutY="14.0" prefHeight="136.0" prefWidth="200.0" styleClass="count_card">
+                  <Label id="title" layoutX="51.0" layoutY="29.0" text="Overdue">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <graphic>
+                        <FontIcon iconLiteral="ci-checkmark-outline-error" iconSize="20" />
+                     </graphic>
+                  </Label>
+                  <Label id="count" fx:id="overdueTaskCounter" layoutX="81.0" layoutY="77.0" text="20" />
+                  <MFXProgressBar id="overdueTaskProgressBar" fx:id="overdueTaskProgressBar" layoutX="21.0" layoutY="66.0" prefHeight="5.0" prefWidth="157.0" progress="0.0" styleClass="bar1" />
+               </Pane>
+            </AnchorPane>
+            <AnchorPane layoutX="35.0" layoutY="312.0" prefHeight="675.0" prefWidth="1116.0" styleClass="table_pane" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="45.0">
+               <Label id="title" layoutX="11.0" layoutY="20.0" text="Tasks List" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="10.0" />
+               <MFXTableView fx:id="taskTable" layoutX="50.0" layoutY="85.0" prefHeight="571.0" prefWidth="1031.0" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="65.0" />
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <Pane prefHeight="115.0" prefWidth="1659.0" styleClass="header_pane" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <Label layoutX="29.0" layoutY="46.0" text="Tasks" />
+         <Label id="usernameLabel" fx:id="usernameLabel" layoutX="1495.0" layoutY="33.0" text="Name" />
+         <Label id="roleLabel" fx:id="roleLabel" layoutX="1495.0" layoutY="57.0" text="role" />
+         <ImageView fitHeight="47.0" fitWidth="50.0" layoutX="1431.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@../../../../../../images/profile.png" />
+            </image>
+         </ImageView>
+      </Pane>
+      <AnchorPane layoutX="1300.0" layoutY="652.0" prefHeight="335.0" prefWidth="396.0" style="-fx-background-color: #d0d0d0;" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="650.0" />
+      <AnchorPane layoutX="1248.0" layoutY="132.0" prefHeight="241.0" prefWidth="396.0" styleClass="chart_pane" AnchorPane.leftAnchor="1248.0" AnchorPane.rightAnchor="15.0">
+         <Label id="title" layoutX="30.0" layoutY="20.0" text="Daily Activity" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="10.0" />
+         <BarChart layoutX="32.0" layoutY="58.0" prefHeight="180.0" prefWidth="355.0" AnchorPane.leftAnchor="22.0">
+            <xAxis>
+               <CategoryAxis side="BOTTOM" />
+            </xAxis>
+            <yAxis>
+               <NumberAxis side="LEFT" />
+            </yAxis>
+         </BarChart>
+      </AnchorPane>
+   </AnchorPane>
+</AnchorPane>

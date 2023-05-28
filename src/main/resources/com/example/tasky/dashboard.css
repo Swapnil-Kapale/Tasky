@@ -1,0 +1,19 @@
+.menubar{
+    -fx-background-color: #f9fbfc;
+    -fx-border-width: 0 2 0 0;
+    -fx-background-radius: 20 0 0 20;
+}
+.menubar .button{
+    -fx-fill: #545F66;
+    -fx-background-color: #f9fbfc;
+}
+
+.main{
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20;
+}
+
+.pane{
+    -fx-background-color: #f9fbfc;
+    -fx-background-radius: 20;
+}

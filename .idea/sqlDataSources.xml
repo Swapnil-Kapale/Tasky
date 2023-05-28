@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="10b794e8-59e7-48c2-a3ef-87b3fccc3514" name="tasky Mapping">
+      <data-sources db="4c6281c4-8eb3-4103-a697-c44dda7f719f" />
+      <scope>
+        <node kind="schema" qname="tasky" />
+      </scope>
+    </mapping>
+  </component>
+</project>

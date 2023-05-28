@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="main" stylesheets="@stylesheets/dashboard.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox id="menubar" prefHeight="720.0" prefWidth="180.0" spacing="15.0" styleClass="menubar" stylesheets="@stylesheets/dashboard.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <MFXButton text="  Dashboard">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </MFXButton>
+            <MFXButton text="  Tasks">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </MFXButton>
+            <MFXButton text="  Events">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </MFXButton>
+            <MFXButton text="  Inbox">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </MFXButton>
+         </children>
+         <padding>
+            <Insets left="20.0" top="80.0" />
+         </padding>
+      </VBox>
+      <FontAwesomeIconView glyphName="CLOSE" layoutX="1238.0" layoutY="37.0" size="20" styleClass="button" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
+      <VBox id="menubar" alignment="BOTTOM_LEFT" layoutY="360.0" prefHeight="360.0" prefWidth="180.0" spacing="15.0" styleClass="menubar" stylesheets="@stylesheets/dashboard.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="360.0">
+         <children>
+            <MFXButton text="  Profile">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </MFXButton>
+            <MFXButton text=" Notifications">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </MFXButton>
+            <MFXButton text=" Settings">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </MFXButton>
+         </children>
+         <padding>
+            <Insets bottom="40.0" left="20.0" />
+         </padding>
+      </VBox>
+      <Label layoutX="229.0" layoutY="59.0" text="Tasks">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <MFXScrollPane layoutX="227.0" layoutY="114.0" prefHeight="221.0" prefWidth="826.0" style="-fx-background-color: f9fbfc; -fx-background-radius: 20;" styleClass="mfx-scroll-pane" />
+   </children>
+</AnchorPane>

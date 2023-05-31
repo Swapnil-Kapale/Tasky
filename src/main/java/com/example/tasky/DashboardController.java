@@ -528,7 +528,7 @@ public class DashboardController implements Initializable {
 //            System.out.println(prepare);
             prepare.executeUpdate();
             fillTeamsList();
-            showDialog();
+//            showDialog();
 
 
         } catch (Exception e) {

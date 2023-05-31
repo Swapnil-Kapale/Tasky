@@ -16,12 +16,12 @@
          <children>
             <AnchorPane prefHeight="400.0" prefWidth="300.0" style="-fx-background-color: #ffff;">
                <children>
-                  <ImageView fitHeight="246.0" fitWidth="293.0" layoutX="4.0" layoutY="141.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-<!--                        <Image url="D:\PBL2\Tasky\images\sign_in.png" />-->
-<!--                        <Image url="../../../../../../images/sign_in.png" />-->
-                     </image>
-                  </ImageView>
+                   <ImageView fitHeight="246.0" fitWidth="293.0" layoutX="4.0" layoutY="141.0" pickOnBounds="true"
+                              preserveRatio="true">
+                       <!--                        <Image url="D:\PBL2\Tasky\images\sign_in.png" />-->
+                       <Image url="@sign_in.png"/>
+                       <!--                        <Image url="../../../../../../images/sign_in.png" />-->
+                   </ImageView>
                   <Label layoutX="86.0" layoutY="36.0" style="-fx-background-color: #ffff;" text="Tasky">
                      <font>
                         <Font name="Arial" size="48.0" />

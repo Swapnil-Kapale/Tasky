@@ -18,6 +18,8 @@ public class Task {
     String task_assigned_date;
     String task_due_date;
 
+    String task_assigned_to = "";
+
 
     public Task(int id, String task_title, String task_description, String assigned_by, String task_type, String task_status, String task_assigned_date, String task_due_date) {
         this.task_id = id;
@@ -28,8 +30,15 @@ public class Task {
         this.task_status = task_status;
         this.task_assigned_date = task_assigned_date;
         this.task_due_date = task_due_date;
+
     }
 
+    public void setAssignedTo(String assigned_to) {
+        this.task_assigned_to = assigned_to;
+    }
+    public String getAssignedTo() {
+        return task_assigned_to;
+    }
 
     public String getAssignedBy() {
         return assigned_by;

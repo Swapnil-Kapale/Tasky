@@ -9,7 +9,8 @@ public class database {
         try{
 //            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tasky","root","Abd@88477");
 //            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tasky","root","");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/task_new_tables","root","");
+//            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/task_new_tables","root","");
+              con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tasky","root","root");
             System.out.println("Connected");
         }catch(Exception ex){
             System.out.println(ex.getMessage());

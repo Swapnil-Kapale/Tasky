@@ -1,0 +1,154 @@
+@import "colors.css";
+.left_container{
+    -fx-background-color: -steel;
+    -fx-background-radius: 10 0 0 10;
+}
+
+/*title/logo*/
+/*.title_container {*/
+/*    -fx-alignment: top-center;*/
+/*    -fx-padding: 10;*/
+/*}*/
+
+/*nav*/
+.menu_container{
+    -fx-padding: 10 10 10 20;
+    -fx-spacing: 20;
+    -fx-background-color: -steel;
+}
+
+.menu_container,.log_out_pane MFXButton{
+    -fx-pref-width: 200;
+    -fx-pref-height: 48;
+    -fx-font-size: 18;
+    -fx-alignment: center-left;
+}
+#btn{
+    -fx-background-color: -steel;
+}
+.header_pane Label{
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+}
+
+#usernameLabel{
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+}
+
+#roleLabel{
+    -fx-font-size: 14;
+    -fx-font-weight: bold;}
+/*#btn:hover{*/
+/*    -fx-background-color: -mfx-onyx;*/
+/*    -fx-text-fill: #ffffff;*/
+/*}*/
+
+/*#btn .FontIcon:hover{*/
+/*    -fx-fill: #ffffff;*/
+/*}*/
+MFXButton:hover{
+    -fx-cursor: hand;
+}
+
+.count_card{
+    -fx-background-color: -steel;
+    -fx-background-radius: 15;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+.count_card #title{
+    -fx-font-size: 18;
+    -fx-text-fill: #000000;
+}
+
+.count_card #count{
+    -fx-font-size: 32;
+    -fx-text-fill: #000000;
+    -fx-font-weight: bold;
+}
+
+#completeTaskProgressBar .bar1 {
+	-fx-fill: -mfx-green;
+}
+
+#pendingTaskProgressBar .bar1 {
+    -fx-fill: -mfx-yellow;
+}
+
+#overdueTaskProgressBar .bar1 {
+    -fx-fill: -mfx-red;
+}
+
+
+/*#completeTaskProgressBar:range2 .bar1 {*/
+/*	-fx-fill: -mfx-blue;*/
+/*}*/
+
+/*#completeTaskProgressBar:range2 .track {*/
+/*    -fx-fill: derive(-mfx-blue, 85%)*/
+/*}*/
+
+.chart_pane{
+    -fx-background-color: -steel;
+    -fx-background-radius: 15;
+    -fx-padding: 10;
+    -fx-spacing: 10;}
+
+.chart_pane #title{
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+}
+
+.table_pane{
+    -fx-background-color: -steel;
+    -fx-background-radius: 15;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+.table_pane #title{
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+}
+/*.report_container{*/
+/*    -fx-alignment: center;*/
+/*}*/
+
+
+/*.report_container MFXButton{*/
+/*    -fx-pref-width: 100;*/
+/*    -fx-pref-height: 36;*/
+/*    -fx-text-alignment: center;*/
+/*    -fx-font-size: 14;*/
+/*    -fx-alignment: center-center;*/
+/*}*/
+
+/*#report_btn {*/
+/*    -fx-background-color: -mfx-red;*/
+/*}*/
+/*#report_btn:hover {*/
+/*    -fx-background-color: #ff7882;*/
+/*}*/
+
+/*.right_container{*/
+/*    -fx-background-color: #ffffff;*/
+/*    -fx-background-radius: 0 10 10 0;*/
+/*}*/
+
+/*.task_container{*/
+/*    -fx-background-radius: 10;*/
+/*    -fx-background-color: -steel;*/
+/*}*/
+
+/*#task_title {*/
+/*    -fx-font-size: 24;*/
+/*}*/
+/*.count_container Label{*/
+/*    -fx-font-size: 15;*/
+/*    -fx-text-fill: -mfx-text-me;*/
+/*}*/
+/*.count_container Text{*/
+/*    -fx-font-size: 24;*/
+/*    -fx-fill: -mfx-text-he;*/
+/*}*/

@@ -18,6 +18,7 @@ import io.github.palexdev.materialfx.utils.others.FunctionalStringConverter;
 import javafx.animation.Animation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +26,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -41,6 +43,11 @@ import java.util.*;
 
 
 public class DashboardController implements Initializable {
+    public static boolean DEBUG_MODE = true;
+    public static boolean getDebugMode(){
+        return DEBUG_MODE;
+    }
+    User USER = SignInController.getCurrentUser();
     //database variables
     private Connection connect = null;
     private PreparedStatement prepare = null;
@@ -155,9 +162,6 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        setupTable();
-//        setupProgressBarsAndCounters();
-//        setupTaskAssignTable();
         taskTable.autosizeColumnsOnInitialization();
         assignedTaskTable.autosizeColumnsOnInitialization();
     }
@@ -234,11 +238,44 @@ public class DashboardController implements Initializable {
 //            AnimationUtils.KeyFrames.of(6000, indicator.progressProperty(), 1.0, Interpolators.INTERPOLATOR_V1)
         );
         Animation a1 = build.getAnimation();
-
         a1.play();
     }
 
     public void setupTable(int userid) {
+
+        //RowFactory allows setting things for individual rows, like context menus and dialogs
+        //Sample code for setTableRowFactory
+/*
+        taskTable.setTableRowFactory(t -> {
+            MFXTableRow<Task> row = new MFXTableRow<>(taskTable, t);
+            row.setOnMouseClicked(event -> {
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    System.out.println("Primary button pressed");
+                } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    System.out.println("Secondary Button pressed");
+                }
+            });
+            return row;
+        });
+*/
+
+
+        //sample code for click on taskIdColumn cell of each task
+/*
+                taskTable.setTableRowFactory(t -> {
+            MFXTableRow<Task> row = new MFXTableRow<>(taskTable, t);
+            row.setOnMouseClicked(event -> {
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    System.out.println("Primary button pressed");
+                    showDialog();
+                } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    System.out.println("Secondary Button pressed");
+                }
+            });
+            return row;
+        });
+*/
+
 
         connect = database.connectDB();
         MFXTableColumn<Task> taskIdColumn = new MFXTableColumn<>("Task ID", true, Comparator.comparing(Task::getTaskId));
@@ -267,8 +304,32 @@ public class DashboardController implements Initializable {
 //        );
         //    taskTable.setItems(data);
 
-        //database connection
-//        String sql = "SELECT * FROM task";
+        fillTaskTable(userid);
+        //filters for tasks
+        taskTable.getFilters().addAll(
+                new IntegerFilter<>("Task ID", Task::getTaskId),
+                new StringFilter<>("Description", Task::getTask_description),
+                new StringFilter<>("Task", Task::getTask_description),
+                new StringFilter<>("Assigned By", Task::getAssignedBy),
+                new StringFilter<>("Type", Task::getTask_type), new StringFilter<>("Task Status", Task::getTask_status),
+
+                //Date filter work but as strings. So user must enter the date in the correct format. (YYYY-MM-DD)
+                new StringFilter<>("Assigned Date", Task::getTask_assigned_date),
+                new StringFilter<>("Due Date", Task::getTask_due_date));
+
+//        setting popups for tasks
+        taskTable.setTableRowFactory(t -> {
+            MFXTableRow<Task> row = new MFXTableRow<>(taskTable, t);
+            row.setOnMouseClicked(event -> {
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    showDialog(t);
+                }
+            });
+            return row;
+        });
+    }
+    public void fillTaskTable(int userid){
+
         String sql = "SELECT * FROM task JOIN task_assign ON task.task_id = task_assign.task_id WHERE task_assign.assigned_to_user_id = ?;";
 
         try {
@@ -294,10 +355,7 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
 
-        taskTable.getFilters().addAll(new IntegerFilter<>("Task ID", Task::getTaskId), new StringFilter<>("Description", Task::getTask_description), new StringFilter<>("Task", Task::getTask_description), new StringFilter<>("Assigned By", Task::getAssignedBy), new StringFilter<>("Type", Task::getTask_type), new StringFilter<>("Task Status", Task::getTask_status),
 
-                //Date filter work but as strings. So user must enter the date in the correct format. (YYYY-MM-DD)
-                new StringFilter<>("Assigned Date", Task::getTask_assigned_date), new StringFilter<>("Due Date", Task::getTask_due_date));
     }
 
     //task create tab
@@ -372,6 +430,8 @@ public class DashboardController implements Initializable {
             prepare.setInt(2, user_id);
             prepare.executeUpdate();
 
+            fillAssignedTaskTable(assignedBy);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -384,7 +444,6 @@ public class DashboardController implements Initializable {
 
     public void setupTaskAssignTable(String temp_username) {
 
-        connect = database.connectDB();
         MFXTableColumn<Task> taskIdColumn = new MFXTableColumn<>("Task ID", true, Comparator.comparing(Task::getTaskId));
         MFXTableColumn<Task> tasktitleColumn = new MFXTableColumn<>("Task", true, Comparator.comparing(Task::getTask_title));
         MFXTableColumn<Task> assignedToColumn = new MFXTableColumn<>("Assigned To", true, Comparator.comparing(Task::getAssignedTo));
@@ -402,6 +461,7 @@ public class DashboardController implements Initializable {
         taskDueDateColumn.setRowCellFactory(task -> new MFXTableRowCell<>(Task::getTask_due_date));
 
         assignedTaskTable.getTableColumns().addAll(taskIdColumn, tasktitleColumn, assignedToColumn, taskTypeColumn, taskStatusColumn, taskAssignedDateColumn, taskDueDateColumn);
+        fillAssignedTaskTable(temp_username);
 
 //        ObservableList<Task> data = FXCollections.observableArrayList(
 //                new Task(1, "Task 1", "John Doe", "Task Type 1", "Task Status 1", "Task Assigned Date 1", "Task Due Date 1"),
@@ -410,9 +470,10 @@ public class DashboardController implements Initializable {
 //        );
         //    taskTable.setItems(data);
 
-        //database connection
-//        String sql = "SELECT * FROM task";
-//        String sql = "SELECT * FROM task JOIN task_assign ON task.task_id = task_assign.task_id WHERE task_assign.assigned_to_user_id = ?;";
+    }
+
+    public void fillAssignedTaskTable(String temp_username) {
+        connect = database.connectDB();
         String sql = "SELECT * FROM task JOIN task_assign ON task.task_id = task_assign.task_id WHERE issue_by = ?;";
 
         try {
@@ -443,6 +504,7 @@ public class DashboardController implements Initializable {
 
                 //Date filter work but as strings. So user must enter the date in the correct format. (YYYY-MM-DD)
                 new StringFilter<>("Assigned Date", Task::getTask_assigned_date), new StringFilter<>("Due Date", Task::getTask_due_date));
+
     }
 
     //create team or user
@@ -499,15 +561,19 @@ public class DashboardController implements Initializable {
             prepare.setBoolean(6, allowCreateTask.isSelected());
             int temp_teamid = Integer.parseInt(this.CreateUserTeamIdField.getText());
             prepare.setInt(7, temp_teamid);
-            System.out.println("User creation success");
+            if (DEBUG_MODE) {
+                System.out.println("User creation success");
+            }
             createUserStatusLabel.setText("User created Successfully");
 
 
-//            System.out.println(prepare);
             prepare.executeUpdate();
             fillUserList();
         } catch (Exception e) {
-            System.out.println("User creation failed");
+            if (DEBUG_MODE) {
+                e.printStackTrace();
+                System.out.println("User creation failed");
+            }
             createUserStatusLabel.setText("Please Enter Valid values");
         }
 
@@ -521,18 +587,19 @@ public class DashboardController implements Initializable {
             prepare.setString(1, CreateTeamNameField.getText());
             int temp_leaderid = Integer.parseInt(this.CreateTeamLeaderField.getText());
             prepare.setInt(2, temp_leaderid);
-            System.out.println("Team creation success");
+            if (DEBUG_MODE) {
+                System.out.println("Team creation success");
+            }
             createTeamStatusLabel.setText("Team created Successfully");
 
-
-//            System.out.println(prepare);
             prepare.executeUpdate();
             fillTeamsList();
-//            showDialog();
-
 
         } catch (Exception e) {
-            System.out.println("Team creation failed");
+            if (DEBUG_MODE) {
+                System.out.println("Team creation failed");
+                e.printStackTrace();
+            }
             createTeamStatusLabel.setText("Please Enter Valid values");
         }
     }
@@ -555,10 +622,16 @@ public class DashboardController implements Initializable {
                 userList.add(u);
             }
 
-//            System.out.println(userList);
+            if (DEBUG_MODE) {
+                System.out.println("User List: ");
+                System.out.println(userList);
+            }
             createUserUserList.setItems(userList);
             createUserUserList.setConverter(converter);
             createUserUserList.setCellFactory(user -> new PersonCellFactory(createUserUserList, user));
+
+            //TODO: Cool effects, but not working properly
+
 //            createUserUserList.features().enableBounceEffect();
 //            createUserUserList.features().enableSmoothScrolling(0.5);
 
@@ -587,7 +660,9 @@ public class DashboardController implements Initializable {
                 teamList.add(t);
             }
 
-//            System.out.println(teamList);
+            if (DEBUG_MODE) {
+                System.out.println(teamList);
+            }
             createTeamTeamList.setItems(teamList);
             createTeamTeamList.setConverter(converter);
             createTeamTeamList.setCellFactory(team -> new TeamCellFactory(createTeamTeamList, team));
@@ -612,10 +687,14 @@ public class DashboardController implements Initializable {
             Stage stage = (Stage) logoutButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
-            System.out.println("Logout");
+            if (DEBUG_MODE) {
+                System.out.println("Logout");
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Logout failed");
+            if (DEBUG_MODE) {
+                System.out.println("Logout failed");
+            }
         }
     }
 
@@ -645,36 +724,98 @@ public class DashboardController implements Initializable {
         }
     }
 
-//    //show a dialog when user clicks on create user button
-//    public void showDialog() {
-//
-    //dialogs work, need to map cancel and ok buttons, few minor bugs
-//        try {
-//            Dialog<String> dialog = new Dialog<>();
-//            dialog.setTitle("My Dialog");
-//            dialog.setHeaderText("Success");
-//            dialog.setContentText("Team created successfully");
-//
-//            // Add buttons to the dialog
-//            ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-//            dialog.getDialogPane().
-//                    getButtonTypes().
-//                    addAll(okButton, ButtonType.CANCEL);
-//
-//            // Show the dialog and wait for a button to be pressed
-//            Optional<String> result = dialog.showAndWait();
-//            if (result.isPresent() && result.get().
-//                    equals("OK")) {
-//                // Handle the OK button press
-//                System.out.println("Ok pressed");
-//            } else {
-//                // Handle the cancel button press or dialog close
-//                System.out.println("cancel pressed");
-//            }
-//        }catch (Exception e){
-//            System.out.println(e);
-//        }
-//
-//    }
+    //    //show a dialog when user clicks on create user button
+    public void showDialog(Task task) {
+
+//    dialogs work, need to map cancel and ok buttons, few minor bugs
+        try {
+            Connection connect = database.connectDB();
+            Dialog<String> dialog = new Dialog<>();
+            dialog.setTitle("Task details");
+            dialog.setHeaderText("Description: ");
+            dialog.setContentText(task.getTask_description());
+
+            // Add buttons to the dialog
+            ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+            ButtonType doneButton = new ButtonType("Mark as Done", ButtonBar.ButtonData.APPLY);
+            ButtonType deleteButton = new ButtonType("Delete Task", ButtonBar.ButtonData.OTHER);
+            if (USER.getRole().equals("admin")) {
+                dialog.getDialogPane().
+                        getButtonTypes().
+                        addAll(deleteButton, doneButton, okButton);
+            } else {
+                dialog.getDialogPane().getButtonTypes().addAll(doneButton, okButton);
+            }
+
+            dialog.setResultConverter(buttonType -> {
+                if (buttonType == okButton) {
+                    return "OK";
+                } else if (buttonType == doneButton) {
+                    return "DONE";
+                } else if (buttonType == deleteButton) {
+                    return "DELETE";
+                }
+                return null;
+            });
+
+            // Show the dialog and wait for a button to be pressed
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent() && result.get().
+                    equals("OK")) {
+                if (DEBUG_MODE) {
+                    System.out.println("Ok pressed");
+                }
+            } else if (result.isPresent() && result.get().equals("DONE")) {
+
+                String sql = "UPDATE task SET task_status = 'complete', task_completion_date = ? WHERE task_id = ?";
+                prepare = connect.prepareStatement(sql);
+                prepare.setString(1, String.valueOf(LocalDate.now()));
+                prepare.setInt(2, task.getTaskId());
+                prepare.executeUpdate();
+                setupProgressBarsAndCounters(USER.getUser_id());
+                fillTaskTable(USER.getUser_id());
+
+                if (DEBUG_MODE) {
+                    System.out.println("Done pressed / Task completed");
+                }
+
+            } else if (result.isPresent() && result.get().equals("DELETE")) {
+                String sql = "DELETE FROM task WHERE task_id = ?";
+                prepare = connect.prepareStatement(sql);
+                prepare.setInt(1, task.getTaskId());
+                prepare.executeUpdate();
+                setupProgressBarsAndCounters(USER.getUser_id());
+                fillTaskTable(USER.getUser_id());
+                fillAssignedTaskTable(USER.getName());
+
+                if (DEBUG_MODE) {
+                    System.out.println("Delete Pressed / Task deleted");
+                }
+
+            }
+        } catch (Exception e) {
+            if (DEBUG_MODE) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 }
+
+
+//Latest changes (2 Jun):
+//1. Added sample code for row and cell clicks (popup should show on row click. Cell clicks can be used in future)
+//2. Created a global user 'USER' on signin to store user details
+//3. Added popups for rows in task table.
+//4. clicking on task for admin shows 3 buttons(delete, mark as done, ok), for user shows 2 buttons(mark as done, ok). Need to map those buttons
+//5. status is changed to complete on mark as done.
+//6. Dialogs have current task in parameter, so attributes for current task for writing queries can be used from that parameter object
+//7. fillTaskTable and fillAssignedTaskTable methods are now separate. these can be called on any action to update tables
+//8. taskTable and counters are updated on mark as done and delete
+//9. a new column 'task_completion_date' is added to task table. this is updated on mark as done
+
+//BUGS:
+//1.Team list is populated on first start?
+//2. assigned tasks table should be updated when marking tasks as complete/ deleting tasks
+//3. popups not implemented for assigned tasks table (need small changes)
 

@@ -1,5 +1,6 @@
 package com.example.tasky;
 
+import com.example.tasky.task.Task;
 import io.github.palexdev.materialfx.css.themes.MFXThemeManager;
 import io.github.palexdev.materialfx.css.themes.Themes;
 import javafx.event.ActionEvent;
@@ -18,6 +19,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class SignInController {
+    public boolean DEBUG_MODE = DashboardController.getDebugMode();
+    static User USER;
 
     @FXML
     private PasswordField passwordTextFeild;
@@ -41,7 +44,7 @@ public class SignInController {
     public void databaseCreation() {
         String createUsersTable = "CREATE TABLE IF NOT EXISTS users ( id SERIAL PRIMARY KEY, username VARCHAR (255) UNIQUE NOT NULL, password VARCHAR(255) NOT NULL, email VARCHAR (255) UNIQUE, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, role VARCHAR(255) NOT NULL DEFAULT 'team_member', team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE, team_name VARCHAR(255) NOT NULL DEFAULT 'No Team', create_team BOOLEAN NOT NULL DEFAULT FALSE, create_task BOOLEAN NOT NULL DEFAULT FALSE);";
         String createTeamsTable = "CREATE TABLE IF NOT EXISTS teams ( id SERIAL PRIMARY KEY, name VARCHAR (255) UNIQUE NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, owner_id INTEGER REFERENCES users(id) ON DELETE CASCADE ); ";
-        String createTasksTable = "CREATE TABLE IF NOT EXISTS task( task_id integer auto_increment primary key, task_title text, task_description text, issue_by text, task_type text, task_status text, task_issue_date date, task_due_date date ); ";
+        String createTasksTable = "CREATE TABLE IF NOT EXISTS task( task_id integer auto_increment primary key, task_title text, task_description text, issue_by text, task_type text, task_status text, task_issue_date date, task_due_date date ,task_completion_date date); ";
         String createTaskAssignTable = "CREATE TABLE IF NOT EXISTS task_assign( task_id integer references task (task_id), assigned_to_user_id integer references users(id) ); ";
         String addAdmin = "INSERT INTO users (username, password, email, role, create_team, create_task) SELECT 'admin', 'admin', 'admin@admin.org', 'admin', TRUE, TRUE  WHERE NOT EXISTS (SELECT * FROM users WHERE username = 'admin')";
 
@@ -58,7 +61,9 @@ public class SignInController {
             prepare.execute();
             connect.createStatement().executeUpdate(addAdmin);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (DEBUG_MODE){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -76,16 +81,21 @@ public class SignInController {
             prepare.setString(2, password);
             result = prepare.executeQuery();
 
-            System.out.println(result);
-
             if (username.isEmpty() || password.isEmpty()) {
                 signinStatusLable.setText("Please enter username and password");
             } else {
                 if (result.next()) {
+
+                    USER = new User(result.getInt("id"), result.getString("username"), result.getString("password"),
+                            result.getString("email"), result.getString("role"), result.getInt("team_id"),
+                            result.getString("team_name"), result.getBoolean("create_team"),
+                            result.getBoolean("create_task"));
                     signinStatusLable.setText("Login Success");
-                    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Dashboard.fxml"));
+                    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("dashboard.fxml"));
                     Scene scene = new Scene(fxmlLoader.load(), 1920, 1000);
                     DashboardController dashboardController = fxmlLoader.getController();
+
+                    //NOTE: From here, we have to change all 'result.variable' to 'USER.variable'
                     dashboardController.setUsernameLabel(result.getString("username"));
                     dashboardController.setRoleLabel(result.getString("role"));
                     dashboardController.setupDashboard(result.getInt("create_team"), result.getInt("create_task"));
@@ -107,11 +117,16 @@ public class SignInController {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            if (DEBUG_MODE){
+                ex.printStackTrace();
+            }
         }
 
     }
 
+    public static User getCurrentUser(){
+        return USER;
+    }
 
     //close signin window
     public void closeSignInWindow(Stage stage) throws IOException {

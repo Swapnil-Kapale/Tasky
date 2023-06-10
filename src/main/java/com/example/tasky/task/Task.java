@@ -36,6 +36,7 @@ public class Task {
     public void setAssignedTo(String assigned_to) {
         this.task_assigned_to = assigned_to;
     }
+
     public String getAssignedTo() {
         return task_assigned_to;
     }
@@ -43,6 +44,7 @@ public class Task {
     public String getAssignedBy() {
         return assigned_by;
     }
+
     public String getTask_title() {
         return task_title;
     }
@@ -88,7 +90,7 @@ public class Task {
         return dueDate.before(currentDate);
     }
 
-    public boolean updateTaskStatus() {
+    public void updateTaskStatus() {
         if (isOverdue()) {
             Connection connection = database.connectDB();
             String sql = "UPDATE task SET task_status = 'overdue' WHERE task_id = " + task_id;
@@ -97,10 +99,7 @@ public class Task {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            return true;
         }
-        return false;
     }
 
 }

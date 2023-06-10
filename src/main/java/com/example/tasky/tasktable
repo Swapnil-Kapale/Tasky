@@ -1,0 +1,68 @@
+    public void setupTable(int userid) {
+
+        connect = database.connectDB();
+        MFXTableColumn<Task> taskIdColumn = new MFXTableColumn<>("Task ID", true, Comparator.comparing(Task::getTaskId));
+        MFXTableColumn<Task> tasktitleColumn = new MFXTableColumn<>("Task", true, Comparator.comparing(Task::getTask_title));
+        MFXTableColumn<Task> assignedByColumn = new MFXTableColumn<>("Assigned By", true, Comparator.comparing(Task::getAssignedBy));
+        MFXTableColumn<Task> taskTypeColumn = new MFXTableColumn<>("Type", true, Comparator.comparing(Task::getTask_type));
+        MFXTableColumn<Task> taskStatusColumn = new MFXTableColumn<>("Task Status", true, Comparator.comparing(Task::getTask_status));
+        MFXTableColumn<Task> taskAssignedDateColumn = new MFXTableColumn<>("Assigned Date", true, Comparator.comparing(Task::getTask_assigned_date));
+        MFXTableColumn<Task> taskDueDateColumn = new MFXTableColumn<>("Due Date", true, Comparator.comparing(Task::getTask_due_date));
+
+        taskIdColumn.setRowCellFactory(task -> new MFXTableRowCell<>(Task::getTaskId));
+        tasktitleColumn.setRowCellFactory(task -> new MFXTableRowCell<>(Task::getTask_title));
+        assignedByColumn.setRowCellFactory(task -> new MFXTableRowCell<>(Task::getAssignedBy));
+        taskTypeColumn.setRowCellFactory(task -> new MFXTableRowCell<>(Task::getTask_type));
+        taskStatusColumn.setRowCellFactory(task -> new MFXTableRowCell<>(Task::getTask_status));
+        taskAssignedDateColumn.setRowCellFactory(task -> new MFXTableRowCell<>(Task::getTask_assigned_date));
+        taskDueDateColumn.setRowCellFactory(task -> new MFXTableRowCell<>(Task::getTask_due_date));
+
+        taskTable.getTableColumns().addAll(taskIdColumn, tasktitleColumn, assignedByColumn, taskTypeColumn, taskStatusColumn, taskAssignedDateColumn, taskDueDateColumn);
+
+//        ObservableList<Task> data = FXCollections.observableArrayList(
+//                new Task(1, "Task 1", "John Doe", "Task Type 1", "Task Status 1", "Task Assigned Date 1", "Task Due Date 1"),
+//                new Task(2, "Task 2", "Jane", "Task Type 2", "Task Status 2", "Task Assigned Date 2", "Task Due Date 2"),
+//                new Task(3, "Task 3", "Alice", "Task Type 3", "Task Status 3", "Task Assigned Date 3", "Task Due Date 3")
+//        );
+        //    taskTable.setItems(data);
+
+        //database connection
+//        String sql = "SELECT * FROM task";
+        String sql = "SELECT * FROM task JOIN task_assign ON task.task_id = task_assign.task_id WHERE task_assign.assigned_to_user_id = ?;";
+
+        try {
+            prepare = connect.prepareStatement(sql);
+            prepare.setInt(1, userid);
+            result = prepare.executeQuery();
+
+            ObservableList<Task> taskList = FXCollections.observableArrayList();
+
+            while (result.next()) {
+                Task t = new Task(result.getInt("task_id"),result.getString("task_title"),result.getString("task_description"),  result.getString("issue_by"), result.getString("task_type"), result.getString("task_status"), result.getString("task_issue_date"), result.getString("task_due_date"));
+                t.updateTaskStatus();
+            }
+            result = prepare.executeQuery();
+            while (result.next()){
+                Task t = new Task(result.getInt("task_id"),result.getString("task_title"),result.getString("task_description"),  result.getString("issue_by"), result.getString("task_type"), result.getString("task_status"), result.getString("task_issue_date"), result.getString("task_due_date"));
+                taskList.add(t);
+            }
+
+            taskTable.setItems(taskList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        taskTable.getFilters().addAll(
+                new IntegerFilter<>("Task ID", Task::getTaskId),
+                new StringFilter<>("Description", Task::getTask_description),
+                new StringFilter<>("Task", Task::getTask_description),
+                new StringFilter<>("Assigned By", Task::getAssignedBy),
+                new StringFilter<>("Type", Task::getTask_type),
+                new StringFilter<>("Task Status", Task::getTask_status),
+
+                //Date filter work but as strings. So user must enter the date in the correct format. (YYYY-MM-DD)
+                new StringFilter<>("Assigned Date", Task::getTask_assigned_date),
+                new StringFilter<>("Due Date", Task::getTask_due_date)
+        );
+    }
